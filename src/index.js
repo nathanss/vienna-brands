@@ -12,7 +12,11 @@ import {
 	__experimentalSelectControl as SelectControl,
 } from '@woocommerce/components';
 
+/** 
+ * Internal dependencies
+*/
 import './index.scss';
+import { BrandsField } from './brands-field';
 
 const sampleItems = [
 	{ value: 'apple', label: 'Apple' },
@@ -45,7 +49,7 @@ const TestFills = () => {
 				section="section/brands"
 				sections={ [ { name: 'section/brands', order: 1 } ] }
 				pluginId={ 'woocommerce' }
-			>
+			><>
 				<SelectControl
 					multiple
 					items={ sampleItems }
@@ -57,8 +61,15 @@ const TestFills = () => {
 					}
 					onRemove={ ( item ) =>
 						setSelected( selected.filter( ( i ) => i !== item ) )
-					}
+					} />
+				<BrandsField />
+				<TextControl
+					label="Test field"
+					name={ inputFieldProps.name }
+					onChange={ inputFieldProps.onChange }
+					value={ inputFieldProps.value }
 				/>
+				</>
 			</WooProductFieldItem>
 		</>
 	);
