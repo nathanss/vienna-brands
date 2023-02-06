@@ -27,10 +27,6 @@ const sampleItems = [
 ];
 
 const TestFills = () => {
-	const [ selected, setSelected ] = useState( [
-		sampleItems[ 0 ],
-		sampleItems[ 2 ],
-	] );
 	return (
 		<>
 			<WooProductSectionItem
@@ -49,27 +45,8 @@ const TestFills = () => {
 				section="section/brands"
 				sections={ [ { name: 'section/brands', order: 1 } ] }
 				pluginId={ 'woocommerce' }
-			><>
-				<SelectControl
-					multiple
-					items={ sampleItems }
-					label="Multiple values"
-					selected={ selected }
-					onSelect={ ( item ) =>
-						Array.isArray( selected ) &&
-						setSelected( [ ...selected, item ] )
-					}
-					onRemove={ ( item ) =>
-						setSelected( selected.filter( ( i ) => i !== item ) )
-					} />
+			>
 				<BrandsField />
-				<TextControl
-					label="Test field"
-					name={ inputFieldProps.name }
-					onChange={ inputFieldProps.onChange }
-					value={ inputFieldProps.value }
-				/>
-				</>
 			</WooProductFieldItem>
 		</>
 	);
