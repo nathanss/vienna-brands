@@ -3,20 +3,30 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
-import { TextControl } from '@wordpress/components';
+import { useState } from '@wordpress/element';
 import {
-	useFormContext,
 	__experimentalWooProductTabItem as WooProductTabItem,
 	__experimentalWooProductSectionItem as WooProductSectionItem,
 	__experimentalWooProductFieldItem as WooProductFieldItem,
 	__experimentalProductFieldSection as ProductFieldSection,
+	__experimentalSelectControl as SelectControl,
 } from '@woocommerce/components';
 
 import './index.scss';
 
+const sampleItems = [
+	{ value: 'apple', label: 'Apple' },
+	{ value: 'pear', label: 'Pear' },
+	{ value: 'orange', label: 'Orange' },
+	{ value: 'grape', label: 'Grape' },
+	{ value: 'banana', label: 'Banana' },
+];
+
 const TestFills = () => {
-	const { getInputProps } = useFormContext();
-	const inputFieldProps = getInputProps( 'test-field' );
+	const [ selected, setSelected ] = useState( [
+		sampleItems[ 0 ],
+		sampleItems[ 2 ],
+	] );
 	return (
 		<>
 			<WooProductSectionItem
@@ -36,11 +46,18 @@ const TestFills = () => {
 				sections={ [ { name: 'section/brands', order: 1 } ] }
 				pluginId={ 'woocommerce' }
 			>
-				<TextControl
-					label="Test field"
-					name={ inputFieldProps.name }
-					onChange={ inputFieldProps.onChange }
-					value={ inputFieldProps.value }
+				<SelectControl
+					multiple
+					items={ sampleItems }
+					label="Multiple values"
+					selected={ selected }
+					onSelect={ ( item ) =>
+						Array.isArray( selected ) &&
+						setSelected( [ ...selected, item ] )
+					}
+					onRemove={ ( item ) =>
+						setSelected( selected.filter( ( i ) => i !== item ) )
+					}
 				/>
 			</WooProductFieldItem>
 		</>
