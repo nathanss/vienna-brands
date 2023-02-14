@@ -67,3 +67,37 @@ function add_extension_register_page() {
 }
 
 add_action( 'admin_menu', 'add_extension_register_page' );
+
+function rest_api_brands_to_product_v2( $response, $post ) {
+		$post_id = is_callable( array( $post, 'get_id' ) ) ? $post->get_id() : ( ! empty( $post->ID ) ? $post->ID : null );
+
+		if ( empty( $response->data['brandsv2'] ) ) {
+			$terms = array();
+
+			foreach ( wp_get_post_terms( $post_id, 'product_brand' ) as $term ) {
+				$terms[] = array(
+					'value'   => $term->term_id,
+					'label' => $term->name,
+					'slug' => $term->slug,
+				);
+			}
+
+			$response->data['brandsv2'] = $terms;
+		}
+
+		return $response;
+	}
+
+	function rest_api_add_brands_to_product_v2( $product, $request, $creating = true ) {
+		$product_id = is_callable( array( $product, 'get_id' ) ) ? $product->get_id() : ( ! empty( $product->ID ) ? $product->ID : null );
+		$params     = $request->get_params();
+		$brands     = isset( $params['brandsv2'] ) ? $params['brandsv2'] : array();
+
+		error_log( print_r( $brands, true ));
+		if ( ! empty( $brands ) ) {
+			$brands = array_map( $brands, function( $brand ) { return $brand['id']; } );
+			wp_set_object_terms( $product_id, $brands, 'product_brand' );
+		}
+	}
+add_filter( 'woocommerce_rest_prepare_product_object', 'rest_api_brands_to_product_v2', 10, 2 ); // WC 3.x
+add_action( 'woocommerce_rest_insert_product_object', 'rest_api_add_brands_to_product_v2', 10, 3 ); // WC 2.6.x
