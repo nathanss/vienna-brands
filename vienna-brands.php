@@ -93,9 +93,8 @@ function rest_api_brands_to_product_v2( $response, $post ) {
 		$params     = $request->get_params();
 		$brands     = isset( $params['brandsv2'] ) ? $params['brandsv2'] : array();
 
-		error_log( print_r( $brands, true ));
 		if ( ! empty( $brands ) ) {
-			$brands = array_map( $brands, function( $brand ) { return $brand['id']; } );
+			$brands = array_map(function( $brand ) { return $brand['value']; },  $brands );
 			wp_set_object_terms( $product_id, $brands, 'product_brand' );
 		}
 	}
